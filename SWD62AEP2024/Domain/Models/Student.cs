@@ -11,10 +11,10 @@ namespace Domain.Models
         public string LastName { get; set; }
         //This is the foreign key so this contains a single value
         public string GroupFK { get; set; }
-        //This is a navigational propery
+        //This is a navigational property
         //This will allow us to explore and navigate the
         //group properties right through an eventual student instance
-        //adv: I can get data related to the Group pertaining to this student without having to write additional sql/linq statements
+        //Adv: I can get data related to the Group pertaining to this student without having to write additional sql/linq statements
         [ForeignKey("GroupFK")]
         public Group Group { get; set; }
     }
