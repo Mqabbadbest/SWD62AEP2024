@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DataAccess.DataContext;
+using DataAccess.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +14,14 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<AttendanceContext>();
 builder.Services.AddControllersWithViews();
+
+/*
+ * AddScoped - 1 instance per user per request
+ * AddTransient - 1 instance per user per request per call
+ * AddSingleton - 1 instnace of StudentsRepository to be shared by all users accessing your website and all requests.
+ */
+
+builder.Services.AddScoped<StudentsRepository>();
 
 var app = builder.Build();
 

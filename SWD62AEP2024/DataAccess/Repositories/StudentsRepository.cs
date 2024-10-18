@@ -16,10 +16,9 @@ namespace DataAccess.Repositories
         /// <summary>
         /// This method will return the entire list of students in the database.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>All students in database</returns>
         public IQueryable<Student> GetStudents()
         {
-            
             return myContext.Students;
         }
 
