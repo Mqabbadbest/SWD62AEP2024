@@ -1,6 +1,5 @@
 ﻿using DataAccess.DataContext;
 using Domain.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DataAccess.Repositories
 {
@@ -29,7 +28,12 @@ namespace DataAccess.Repositories
 
         public void UpdateStudent(Student student)
         {
-
+            // We should make sure that the (IDCard) PK is not modified
+            var oldStudent = GetStudent(student.IdCard);
+            oldStudent.FirstName = student.FirstName;
+            oldStudent.LastName = student.LastName;
+            oldStudent.GroupFK = student.GroupFK;
+            myContext.SaveChanges();
         }
 
         public void DeleteStudent(Student student)
