@@ -1,6 +1,8 @@
 ﻿using DataAccess.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Models;
+using AspNetCore;
+using Presentation.Models;
 
 namespace Presentation.Controllers
 {
@@ -80,6 +82,50 @@ namespace Presentation.Controllers
             {
                 TempData["Error"] = "Something went wrong. We are sorry.";
                 return Redirect("Error");
+            }
+        }
+
+
+        [HttpGet] //Used to load the page with empty textboxes
+        public IActionResult Create([FromServices] GroupsRepository groupRepo) { 
+
+            //Eventually: We need to fetch the list of existing groups
+            var myGroups = groupRepo.GetGroups();
+
+            // How are we going to pass the myGroups into the View?
+            //Approach 1 - we can pass a model into the view where we create a ViewModel
+            // Problem is, you cannot pass IQueryable<Group> model into the Student model
+            StudentCreateViewModel myModel = new StudentCreateViewModel();
+            myModel.Groups = myGroups.ToList();
+
+            return View(myModel);
+            //Approach 2
+
+
+        }
+
+        [HttpPost] //Is triggered by the submit of the form
+        public IActionResult Create(Student student) { 
+            if(_studentRepository.GetStudent(student.IdCard) != null)
+            {
+                TempData["Error"] = "Student already exists.";
+                return RedirectToAction("List");
+            } 
+            else
+            {
+                ModelState.Remove(nameof(Student.Group));
+
+                //This line will ensure that if there are validation policies (Centralized or not)
+                //applied, they will have to pass from here; it ensures that validations have been triggered
+                if (ModelState.IsValid)
+                {
+                    _studentRepository.AddStudent(student);
+                    TempData["Message"] = "Student was added successfully!";
+                    return RedirectToAction("List");
+                }
+
+                TempData["Error"] = "Check your inputs.";
+                return View(student); //Will be looking for a view as the action...Create
             }
         }
     }
