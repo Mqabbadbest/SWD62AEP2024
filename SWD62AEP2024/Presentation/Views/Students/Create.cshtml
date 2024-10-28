@@ -26,7 +26,6 @@
             <br />
             <div class="form-group">
                 <label asp-for="Student.GroupFK" class="control-label"></label>
-                <!--<input asp-for="Student.GroupFK" name="GroupFK" class="form-control" />-->
                 <select class="form-control" name="GroupFK">
                     @foreach(var group in Model.Groups)
                     {
@@ -44,6 +43,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="List">Back to List</a>
 </div>
+
 

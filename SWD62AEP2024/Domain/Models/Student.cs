@@ -17,5 +17,7 @@ namespace Domain.Models
         //Adv: I can get data related to the Group pertaining to this student without having to write additional sql/linq statements
         [ForeignKey("GroupFK")]
         public virtual Group Group { get; set; }
+
+        public string? ImagePath { get; set; }
     }
 }

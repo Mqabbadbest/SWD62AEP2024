@@ -1,7 +1,6 @@
 ﻿using DataAccess.Repositories;
 using Microsoft.AspNetCore.Mvc;
 using Domain.Models;
-using AspNetCore;
 using Presentation.Models;
 
 namespace Presentation.Controllers
@@ -40,7 +39,10 @@ namespace Presentation.Controllers
                 //It will take the end user to the page we want to redirect them to
                 return RedirectToAction("List");
             }
-            return View(student);
+            else
+            {
+                return View(student);
+            }
         }
 
         [HttpPost]
@@ -87,7 +89,8 @@ namespace Presentation.Controllers
 
 
         [HttpGet] //Used to load the page with empty textboxes
-        public IActionResult Create([FromServices] GroupsRepository groupRepo) { 
+        public IActionResult Create([FromServices] GroupsRepository groupRepo)
+        {
 
             //Eventually: We need to fetch the list of existing groups
             var myGroups = groupRepo.GetGroups();
@@ -100,17 +103,16 @@ namespace Presentation.Controllers
 
             return View(myModel);
             //Approach 2
-
-
         }
-
+         
         [HttpPost] //Is triggered by the submit of the form
-        public IActionResult Create(Student student) { 
-            if(_studentRepository.GetStudent(student.IdCard) != null)
+        public IActionResult Create(Student student, [FromServices] GroupsRepository groupRepo)
+        {
+            if (_studentRepository.GetStudent(student.IdCard) != null)
             {
                 TempData["Error"] = "Student already exists.";
                 return RedirectToAction("List");
-            } 
+            }
             else
             {
                 ModelState.Remove(nameof(Student.Group));
@@ -125,7 +127,17 @@ namespace Presentation.Controllers
                 }
 
                 TempData["Error"] = "Check your inputs.";
-                return View(student); //Will be looking for a view as the action...Create
+
+                //Populating a StudentCreateViewModel
+                var myGroups = groupRepo.GetGroups();
+                StudentCreateViewModel myModel = new StudentCreateViewModel();
+                myModel.Groups = myGroups.ToList();
+                //Why do I assign the student that was submitted int his method?
+                //Passing the same instance back to the page
+                //so that I show the end-user the same data they submitted
+                myModel.Student = student;
+
+                return View(myModel); //Will be looking for a view as the action...Create
             }
         }
     }
