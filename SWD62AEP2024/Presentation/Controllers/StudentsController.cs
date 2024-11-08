@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Domain.Models;
 using Presentation.Models;
+using Microsoft.Build.Construction;
 
 namespace Presentation.Controllers
 {
@@ -47,7 +48,7 @@ namespace Presentation.Controllers
 
         [HttpPost]
         //Handle the click of the Submit Changes button
-        public IActionResult Update(Student student)
+        public IActionResult Update(Student student, IFormFile file, [FromServices] GroupsRepository groupRepo, [FromServices] IWebHostEnvironment host)
         {
             try
             {
@@ -66,11 +67,27 @@ namespace Presentation.Controllers
                     //Validations, sanitizations of data
 
                     ModelState.Remove(nameof(Student.Group));
+                    ModelState.Remove("file");
 
                     //This line will ensure that if there are validation policies (Centralized or not)
                     //applied, they will have to pass from here; it ensures that validations have been triggered
                     if (ModelState.IsValid)
                     {
+                        if (file != null)
+                        {
+                            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+                            string absolutePath = host.WebRootPath + "\\images\\" + fileName;
+
+                            using (var f = System.IO.File.Create(absolutePath))
+                            {
+                                file.CopyTo(f);
+                            }
+
+                            string relativePath = "\\images\\" + fileName;
+                            student.ImagePath = relativePath;
+                        }
+
                         _studentRepository.UpdateStudent(student);
                         TempData["Message"] = "Student updated successfully!";
                         return RedirectToAction("List");
@@ -106,7 +123,7 @@ namespace Presentation.Controllers
         }
          
         [HttpPost] //Is triggered by the submit of the form
-        public IActionResult Create(Student student, [FromServices] GroupsRepository groupRepo)
+        public IActionResult Create(Student student, IFormFile file, [FromServices] GroupsRepository groupRepo, [FromServices] IWebHostEnvironment host)
         {
             if (_studentRepository.GetStudent(student.IdCard) != null)
             {
@@ -116,11 +133,29 @@ namespace Presentation.Controllers
             else
             {
                 ModelState.Remove(nameof(Student.Group));
-
+                ModelState.Remove("file");
                 //This line will ensure that if there are validation policies (Centralized or not)
                 //applied, they will have to pass from here; it ensures that validations have been triggered
                 if (ModelState.IsValid)
                 {
+                    //File Upload
+                    if (file != null)
+                    {
+                        //
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+                        string absolutePath = host.WebRootPath + "\\images\\" + fileName;
+
+                        using (var f = System.IO.File.Create(absolutePath))
+                        {
+                            file.CopyTo(f);
+                        }   
+
+                        string relativePath = "\\images\\" + fileName;
+                        student.ImagePath = relativePath;
+                    }
+
+                    //Save the details in the database
                     _studentRepository.AddStudent(student);
                     TempData["Message"] = "Student was added successfully!";
                     return RedirectToAction("List");
