@@ -38,8 +38,15 @@ namespace DataAccess.Repositories
             myContext.SaveChanges();
         }
 
-        public void DeleteStudent(Student student)
-        { }
+        public void DeleteStudent(int id)
+        {
+            var student = GetStudent(id);
+            if (student != null)//if the student exists
+            {
+                myContext.Students.Remove(student);
+                myContext.SaveChanges();
+            }
+        }
 
         public void AddStudent(Student student)
         {

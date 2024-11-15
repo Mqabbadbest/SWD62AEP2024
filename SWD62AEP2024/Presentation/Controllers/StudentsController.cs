@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Domain.Models;
 using Presentation.Models;
 using Microsoft.Build.Construction;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Presentation.Controllers
 {
@@ -174,6 +175,13 @@ namespace Presentation.Controllers
 
                 return View(myModel); //Will be looking for a view as the action...Create
             }
+        }
+
+        public IActionResult Delete(int id)
+        {
+            _studentRepository.DeleteStudent(id);
+            TempData["Message"] = "Student was deleted successfully!";
+            return RedirectToAction("List");
         }
     }
 }

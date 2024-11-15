@@ -21,7 +21,7 @@
                     </p>
                     <a href="/students/Edit/@student.IdCard" class="btn btn-primary">Update Details</a>
                     &nbsp;
-                    <a href="#" class="btn btn-primary">Delete Student</a>
+                    <a href="/students/Delete?id=@student.IdCard" class="btn btn-primary" onclick="return confirm('Are you sure?');">Delete Student</a>
                 </div>
             </div>
         </div>
