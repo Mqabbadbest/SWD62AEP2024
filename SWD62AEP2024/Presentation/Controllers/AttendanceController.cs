@@ -28,27 +28,31 @@ namespace Presentation.Controllers
         //A page which shows which attendances I can take
         public IActionResult Index()
         {
-            //var groupedAttendances = _attendanceRepository
-            //    .GetAttendances()
-            //        .GroupBy(a => new { a.SubjectFK, a.Student.GroupFK, a.Timestamp.Date, Subject = a.Subject.Name })
-            //        .OrderByDescending(x => x.Key.Date)
-            //        .Select(g => new AttendancesListViewModel()
-            //        {
-            //            SubjectFK = g.Key.SubjectFK,
-            //            Group = g.Key.GroupFK,
-            //            SubjectName = g.Key.Subject,
-            //            Date = g.Key.Date,
-            //        })
-            //        .ToList();
-            //return View(groupedAttendances);
-
             var subjects = _subjectsRepository.GetSubjects();
             var groups = _groupsRepository.GetGroups();
+
+            List<SelectPastAttendanceViewModel> pastAttendances = _attendanceRepository.GetAttendances()
+                .GroupBy(x => new
+                {
+                    Date = x.Timestamp,
+                    SubjectCode = x.SubjectFK,
+                    SubjectName = x.Subject.Name,
+                    GroupCode = x.Student.GroupFK
+                })
+                .Select(g => new SelectPastAttendanceViewModel
+                {
+                    Date = g.Key.Date,
+                    SubjectCode = g.Key.SubjectCode,
+                    SubjectName = g.Key.SubjectName,
+                    GroupCode = g.Key.GroupCode
+                })
+                .ToList();
 
             SelectGroupSubjectViewModel viewModel = new SelectGroupSubjectViewModel()
             {
                 Groups = groups.ToList(),
-                Subjects = subjects.ToList()
+                Subjects = subjects.ToList(),
+                PastAttendances = pastAttendances
             };
 
             return View(viewModel);
@@ -84,9 +88,15 @@ namespace Presentation.Controllers
         }
 
         [HttpPost] // it saves the absences and presences of all the studnets from the first Create method
-        public IActionResult Create()
+        public IActionResult Create(List<Attendance> attendances)
         {
-            return View();
+
+            if(attendances.Count > 0)
+            {
+                _attendanceRepository.AddAttendances(attendances);
+            }
+
+            return RedirectToAction("Index");
         }
     }
 }
