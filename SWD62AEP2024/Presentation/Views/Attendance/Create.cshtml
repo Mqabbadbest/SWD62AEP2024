@@ -43,7 +43,24 @@
                     <td class="text-center">
                         <input type="hidden" name="attendances[@s].SubjectFK" value="@Model.SubjectCode" />
                         <input type="hidden" value="@student.IdCard" name="attendances[@s].StudentFK" />
-                        <input type="checkbox" name="attendances[@s].IsPresent" value="true" class="form-check-input" />
+                        @if (Model.Presence.Count > 0)
+                        {
+                            if (Model.Presence[s] == true)
+                            {
+                                <input type="checkbox" name="attendances[@s].IsPresent" checked class="form-check-input" />
+
+                            }else
+                            {
+                                <input type="checkbox" name="attendances[@s].IsPresent" class="form-check-input" />
+
+                            }
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="attendances[@s].IsPresent" checked class="form-check-input" />
+                        }
+
+
                     </td>
                 </tr>
             }
