@@ -62,7 +62,7 @@ namespace Presentation.Controllers
         public IActionResult Create(string groupCode, string subjectCode, string attendanceButton)
         {
 
-            if (attendanceButton == "0") {
+            if (attendanceButton == "0") {// Create
                 var students = _studentsRepository.GetStudents() //Select * from Students
                     .Where(s => s.GroupFK == groupCode)// Select * from Students where GroupFK = groupCode
                     .OrderBy(s => s.FirstName) // Order by FirstName
@@ -85,10 +85,13 @@ namespace Presentation.Controllers
                     viewModel.SubjectName = "";
                 }
 
+                //The update variable will be created when the application is running
+                ViewBag.update = "false";
+
                 return View(viewModel);
             }
             else
-            {
+            { // Update
                 string[] myValues= attendanceButton.Split(new char[] { '|' });
                 DateTime date = Convert.ToDateTime(myValues[0]);
                 string selectedSubjectCode = myValues[1];
@@ -98,28 +101,37 @@ namespace Presentation.Controllers
                 viewModel.GroupCode = selectedGroupCode;
                 viewModel.SubjectCode = selectedSubjectCode;
                 viewModel.Students = _studentsRepository.GetStudents().Where(s => s.GroupFK == selectedGroupCode).OrderBy(s => s.FirstName).ToList();
-                viewModel.Presence = _attendanceRepository.GetAttendances()
+                viewModel.Attendances = _attendanceRepository.GetAttendances()
                     .Where(
                     s => s.SubjectFK == selectedSubjectCode 
                     && s.Timestamp.Day == date.Day 
                     && s.Timestamp.Month == date.Month 
                     && s.Timestamp.Year == date.Year 
                     && s.Timestamp.Minute == date.Minute)
-                    .OrderBy(s => s.Student.FirstName)
-                    .Select(s => s.IsPresent)
+                    .OrderBy(s => s.Student.IdCard)
                     .ToList();
 
+                ViewBag.update = "true";
                 return View(viewModel);
             }
         }
 
         [HttpPost] // it saves the absences and presences of all the studnets from the first Create method
-        public IActionResult Create(List<Attendance> attendances)
+        public IActionResult Create(List<Attendance> attendances, bool update)
         {
 
             if(attendances.Count > 0)
             {
-                _attendanceRepository.AddAttendances(attendances);
+                if (update)
+                {
+                    _attendanceRepository.UpdateAttendances(attendances);
+                }
+                else
+                {
+                    _attendanceRepository.AddAttendances(attendances);
+                }
+               
+                TempData["message"] = "Attendance saved";
             }
 
             return RedirectToAction("Index");
