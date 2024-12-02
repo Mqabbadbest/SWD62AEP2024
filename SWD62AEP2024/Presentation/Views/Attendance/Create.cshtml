@@ -44,26 +44,29 @@
                     <td>@student.LastName</td>
                     <td>@student.IdCard</td>
                     <td class="text-center">
+                        @*The subject code and the id card are needed in both Create and Edit*@
                         <input type="hidden" name="attendances[@s].SubjectFK" value="@Model.SubjectCode" />
-                        <input type="hidden" value="@student.IdCard" name="attendances[@s].StudentFK" />
-                        <input type="hidden" name="attendances.Attendances[@s].Id" value="@Model.Attendances[s].Id" />
+                        <input type="hidden" name="attendances[@s].StudentFK" value="@student.IdCard" />
+
                         @if (Model.Attendances.Count > 0)
                         {
                             //View\Edit attendance
-                            if (Model.Attendances[s].IsPresent == true)
+                            //If you are editing an attendance you need the attendance id to be read and re-submitted
+                            <input type="hidden" name="attendances[@s].Id" value="@Model.Attendances[s].Id" />
+
+                            if (Model.Attendances.SingleOrDefault(x=>x.StudentFK == student.IdCard).IsPresent == true)
                             {
                                 <input type="checkbox" name="attendances[@s].IsPresent" value="true" checked class="form-check-input" />
-
                             }
                             else
                             {
                                 <input type="checkbox" name="attendances[@s].IsPresent" value="true" class="form-check-input" />
-
                             }
                         }
                         else
                         {
                             //Create a new attendance
+                            //If you are creating a new attendance you don't need the attendance id
                             <input type="checkbox" name="attendances[@s].IsPresent" value="true" checked class="form-check-input" />
                         }
 

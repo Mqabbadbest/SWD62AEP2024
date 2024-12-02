@@ -45,7 +45,7 @@ namespace DataAccess.Repositories
             foreach(var a in attendances)
             {
                 var oldRecord = GetAttendances()
-                                .SingleOrDefault(x => x.StudentFK == a.Id);
+                                .SingleOrDefault(x => x.Id == a.Id);
                 oldRecord.IsPresent = a.IsPresent;
             }
             _attendanceContext.SaveChanges();

@@ -62,10 +62,11 @@ namespace Presentation.Controllers
         public IActionResult Create(string groupCode, string subjectCode, string attendanceButton)
         {
 
-            if (attendanceButton == "0") {// Create
+            if (attendanceButton == "0")
+            {// Create
                 var students = _studentsRepository.GetStudents() //Select * from Students
                     .Where(s => s.GroupFK == groupCode)// Select * from Students where GroupFK = groupCode
-                    .OrderBy(s => s.FirstName) // Order by FirstName
+                    .OrderBy(s => s.IdCard) // Order by FirstName
                     .ToList(); // Execute the query
 
                 CreateAttendanceViewModel viewModel = new CreateAttendanceViewModel()
@@ -92,7 +93,7 @@ namespace Presentation.Controllers
             }
             else
             { // Update
-                string[] myValues= attendanceButton.Split(new char[] { '|' });
+                string[] myValues = attendanceButton.Split(new char[] { '|' });
                 DateTime date = Convert.ToDateTime(myValues[0]);
                 string selectedSubjectCode = myValues[1];
                 string selectedGroupCode = myValues[2];
@@ -100,14 +101,18 @@ namespace Presentation.Controllers
                 CreateAttendanceViewModel viewModel = new CreateAttendanceViewModel();
                 viewModel.GroupCode = selectedGroupCode;
                 viewModel.SubjectCode = selectedSubjectCode;
-                viewModel.Students = _studentsRepository.GetStudents().Where(s => s.GroupFK == selectedGroupCode).OrderBy(s => s.FirstName).ToList();
+                viewModel.Students = _studentsRepository.GetStudents().Where(s => s.GroupFK == selectedGroupCode)
+                    .OrderBy(s => s.IdCard)
+                    .ToList();
                 viewModel.Attendances = _attendanceRepository.GetAttendances()
                     .Where(
-                    s => s.SubjectFK == selectedSubjectCode 
-                    && s.Timestamp.Day == date.Day 
-                    && s.Timestamp.Month == date.Month 
-                    && s.Timestamp.Year == date.Year 
-                    && s.Timestamp.Minute == date.Minute)
+                    s => s.SubjectFK == selectedSubjectCode
+                    && s.Timestamp.Day == date.Day
+                    && s.Timestamp.Month == date.Month
+                    && s.Timestamp.Year == date.Year
+                    && s.Timestamp.Minute == date.Minute
+                    && s.Student.GroupFK == selectedGroupCode
+                    )
                     .OrderBy(s => s.Student.IdCard)
                     .ToList();
 
@@ -120,7 +125,7 @@ namespace Presentation.Controllers
         public IActionResult Create(List<Attendance> attendances, bool update)
         {
 
-            if(attendances.Count > 0)
+            if (attendances.Count > 0)
             {
                 if (update)
                 {
@@ -130,7 +135,7 @@ namespace Presentation.Controllers
                 {
                     _attendanceRepository.AddAttendances(attendances);
                 }
-               
+
                 TempData["message"] = "Attendance saved";
             }
 
