@@ -1,10 +1,12 @@
 ﻿using Domain.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DataAccess.DataContext
 {
     //The context class is an abstract representation of our database.
-    public class AttendanceContext : DbContext
+    public class AttendanceContext : IdentityDbContext<CustomUser>
     {
         public AttendanceContext(DbContextOptions<AttendanceContext> options) : base(options)
         {
