@@ -1,6 +1,4 @@
-﻿using Domain.Models;
-
-namespace Presentation.Models
+﻿namespace Presentation.Models
 {
     public class AttendancesListViewModel
     {

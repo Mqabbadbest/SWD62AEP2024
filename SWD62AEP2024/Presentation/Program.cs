@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using DataAccess.DataContext;
 using DataAccess.Repositories;
 using Domain.Models;
+using Presentation.ActionFilters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +16,11 @@ builder.Services.AddDefaultIdentity<CustomUser>(options => options.SignIn.Requir
     .AddEntityFrameworkStores<AttendanceContext>();
 builder.Services.AddControllersWithViews();
 
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<LogsActionFilter>();
+});
+
 /*
  * AddScoped - 1 instance per user per request
  * AddTransient - 1 instance per user per request per call
@@ -26,6 +31,7 @@ builder.Services.AddScoped<StudentsRepository>();
 builder.Services.AddScoped<GroupsRepository>();
 builder.Services.AddScoped<AttendanceRepository>();
 builder.Services.AddScoped<SubjectsRepository>();
+builder.Services.AddScoped<LogsRepository>();
 
 var app = builder.Build();
 

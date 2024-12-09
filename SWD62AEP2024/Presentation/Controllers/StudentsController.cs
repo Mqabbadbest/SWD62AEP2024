@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Domain.Models;
 using Presentation.Models;
-using Microsoft.Build.Construction;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Presentation.ActionFilters;
 
 namespace Presentation.Controllers
 {
@@ -12,7 +11,7 @@ namespace Presentation.Controllers
     //Keep the repository classes to interact directly with the database.
     //Keep the controllers to handle requests/responses i.e. user input and then sanitize accordingly
     //in other words do not make any calls directly to the database in the controller.
-
+    [LogsActionFilter()] // To log all actions in the controller
     public class StudentsController : Controller
     {
         private StudentsRepository _studentRepository;
@@ -24,6 +23,7 @@ namespace Presentation.Controllers
         }
 
         //Method Injection - List([FromServices] StudentsRepository myRepo)
+        [HttpGet]
         public IActionResult List()
         {
             var list = _studentRepository.GetStudents();

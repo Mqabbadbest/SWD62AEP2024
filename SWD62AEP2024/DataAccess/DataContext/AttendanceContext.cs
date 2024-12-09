@@ -1,5 +1,4 @@
 ﻿using Domain.Models;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +12,7 @@ namespace DataAccess.DataContext
         }
 
         //Objects MUST be in plural
+        public DbSet<Log> Logs { get; set; }
         public DbSet<Subject> Subjects { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Group> Groups { get; set; }
