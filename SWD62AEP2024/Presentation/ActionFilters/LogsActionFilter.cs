@@ -1,4 +1,5 @@
 ﻿using DataAccess.Repositories;
+using Domain.Interfaces;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -24,7 +25,7 @@ namespace Presentation.ActionFilters
 
             myLog.IPAddress = context.HttpContext.Connection.RemoteIpAddress?.ToString();
 
-            LogsRepository logsRepository = context.HttpContext.RequestServices.GetService<LogsRepository>();
+            ILogsRepository logsRepository = context.HttpContext.RequestServices.GetService<ILogsRepository>();
             logsRepository.AddLog(myLog);
 
             base.OnActionExecuting(context); // If you want to keep running the next code smoothly, do not delete this line.

@@ -1,14 +1,15 @@
 ﻿using DataAccess.DataContext;
+using Domain.Interfaces;
 using Domain.Models;
 
 namespace DataAccess.Repositories
 {
-    public class LogsRepository
+    public class LogsDbRepository : ILogsRepository
     {
 
         private AttendanceContext myContext;
 
-        public LogsRepository(AttendanceContext _myContext) {
+        public LogsDbRepository(AttendanceContext _myContext) {
             myContext = _myContext;
         }
 
@@ -16,6 +17,11 @@ namespace DataAccess.Repositories
         {
             myContext.Logs.Add(myLog);
             myContext.SaveChanges();
+        }
+
+        public IQueryable<Log> LoadLogs()
+        {
+            return myContext.Logs;
         }
     }
 }

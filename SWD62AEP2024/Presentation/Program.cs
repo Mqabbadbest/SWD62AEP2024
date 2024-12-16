@@ -3,6 +3,7 @@ using DataAccess.DataContext;
 using DataAccess.Repositories;
 using Domain.Models;
 using Presentation.ActionFilters;
+using Domain.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,7 +32,31 @@ builder.Services.AddScoped<StudentsRepository>();
 builder.Services.AddScoped<GroupsRepository>();
 builder.Services.AddScoped<AttendanceRepository>();
 builder.Services.AddScoped<SubjectsRepository>();
-builder.Services.AddScoped<LogsRepository>();
+builder.Services.AddScoped<LogsDbRepository>();
+
+//builder.Services.AddScoped<ILogsRepository, LogsFileRepository>();
+int logsSetting = 1;
+try
+{
+    logsSetting = builder.Configuration.GetValue<int>("LogsSetting");
+}
+catch
+{
+    logsSetting = 1;
+}
+
+switch (logsSetting)
+{
+    case 1:
+        builder.Services.AddScoped<ILogsRepository, LogsDbRepository>();
+        break;
+    case 2:
+        builder.Services.AddScoped<ILogsRepository, LogsFileRepository>(x => new LogsFileRepository("logs.json"));
+        break;
+    default:
+        builder.Services.AddScoped<ILogsRepository, LogsDbRepository>();
+        break;
+}
 
 var app = builder.Build();
 

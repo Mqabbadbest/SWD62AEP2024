@@ -1,0 +1,20 @@
+[
+  {
+    "Id": 0,
+    "User": "miguelcassar@gmail.com",
+    "Message": "Timestamp: 16/12/2024 10:15:08, Action: GET, QueryString: ",
+    "IPAddress": "::1"
+  },
+  {
+    "Id": 0,
+    "User": "miguelcassar@gmail.com",
+    "Message": "Timestamp: 16/12/2024 10:15:37, Action: GET, QueryString: ",
+    "IPAddress": "::1"
+  },
+  {
+    "Id": 0,
+    "User": "miguelcassar@gmail.com",
+    "Message": "Timestamp: 16/12/2024 10:15:37, Action: GET, QueryString: ",
+    "IPAddress": "::1"
+  }
+]
